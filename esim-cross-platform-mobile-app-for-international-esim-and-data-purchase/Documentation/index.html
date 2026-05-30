@@ -1,0 +1,1274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Esim - Cross Platform Mobile App for International eSim and Data Purchase</title>
+  <!-- favicon -->
+  <link rel="icon" href="assets/images/favicon.png" sizes="16x16" type="image/png" />
+  <!-- bootstrap 5  -->
+  <link rel="stylesheet" href="assets/css/lib/bootstrap.min.css" />
+  <!-- fontawesome 5  -->
+  <link rel="stylesheet" href="assets/css/lib/font-awesome.css" />
+
+  <link rel="stylesheet" href="assets/css/lib/line-awesome.css" />
+
+  <link rel="stylesheet" href="assets/css/lib/simplebar.css" />
+  <link rel="stylesheet" href="assets/css/lib/file-explore.css" />
+
+
+  <link rel="stylesheet" href="assets/css/main.css" />
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#docNav" data-bs-offset="50">
+
+  <header class="mobile-header">
+    <div class="container">
+      <div class="row g-4 align-items-center justify-content-between">
+        <div class="col-6">
+          <!-- Logo  -->
+          <a href="index.html" class="logo">
+            <img src="assets/images/logo.png" alt="images" class="img-fluid logo__is" />
+          </a>
+          <!-- Logo End -->
+        </div>
+        <div class="col-6">
+          <div class="text-end">
+            <button type="button" class="btn btn--sqr sidebar-toggler">
+              <i class="fas fa-bars"></i>
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+  <div class="doc">
+    <div class="doc__sidebar" id="docNav">
+      <div class="doc-logo">
+        <!-- Logo  -->
+        <a href="index.html" class="logo">
+          <img src="assets/images/logo.png" alt="images" class="img-fluid logo__is" />
+        </a>
+        <!-- Logo End -->
+      </div>
+      <nav class="doc-nav" data-simplebar>
+        <ul class="list doc-nav__list">
+          <li>
+            <a href="#introduction" class="doc-nav__link nav-link">
+              <span class="list list--row align-items-center"><i class="lar la-clone"></i> <span
+                  class="d-block">introduction</span></span>
+            </a>
+          </li>
+          <li>
+            <a href="#requirements" class="doc-nav__link nav-link">
+              <span class="list list--row align-items-center"><i class="las la-server"></i> <span
+                  class="d-block">requirements</span></span>
+            </a>
+          </li>
+          <li>
+            <a href="#installation" class="doc-nav__link nav-link">
+              <span class="list list--row align-items-center"><i class="las la-cog"></i> <span class="d-block">how to
+                  install </span></span> </a>
+          </li>
+          <li>
+            <a href="#folder" class="doc-nav__link nav-link">
+              <span class="list list--row align-items-center"><i class="las la-folder"></i> <span class="d-block">
+                  Folder structure
+                </span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="#screens" class="doc-nav__link nav-link">
+              <span class="list list--row align-items-center"><i class="las la-desktop"></i>
+                <span class="d-block">
+                  Screens
+                </span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="#mconfig" class="doc-nav__link nav-link">
+              <span class="list list--row align-items-center"><i class="las la-cog"></i>
+                <span class="d-block">
+                  Main Configuration
+                </span>
+              </span>
+            </a>
+            <ul>
+              <a href="#flutterSetup" class="doc-nav__link nav-link">
+                <span class="list list--row align-items-center"><i class="las la-list"></i>
+                  <span class="d-block">
+                    Flutter Setup
+                  </span>
+                </span>
+              </a>
+              <a href="#firebaseSetup" class="doc-nav__link nav-link">
+                <span class="list list--row align-items-center"><i class="las la-list"></i>
+                  <span class="d-block">
+                    Firebase Setup
+                  </span>
+                </span>
+              </a>
+
+
+
+
+              <a href="#firebaseAuth" class="doc-nav__link nav-link">
+                <span class="list list--row align-items-center"><i class="las la-list"></i>
+                  <span class="d-block">
+                    Firebase Authentication Setup
+                  </span>
+                </span>
+              </a>
+
+              <a href="#flutterCli" class="doc-nav__link nav-link">
+                <span class="list list--row align-items-center"><i class="las la-list"></i>
+                  <span class="d-block">
+                    Install Firebase With Flutter CLI in App
+                  </span>
+                </span>
+              </a>
+              <a href="#keystoreSetup" class="doc-nav__link nav-link">
+                <span class="list list--row align-items-center"><i class="las la-list"></i>
+                  <span class="d-block">
+                    Keystore Setup
+                  </span>
+                </span>
+              </a>
+              <a href="#LinkedInSetup" class="doc-nav__link nav-link">
+                <span class="list list--row align-items-center"><i class="las la-list"></i>
+                  <span class="d-block">
+                    Linkedin Setup
+                  </span>
+                </span>
+              </a>
+            </ul>
+          </li>
+          <li>
+            <a href="#appsetup" class="doc-nav__link nav-link">
+              <span class="list list--row align-items-center"><i class="las la-cog"></i>
+                <span class="d-block">
+                  App Setup
+                </span>
+              </span>
+            </a>
+            <ul>
+              <a href="#cngAppName" class="doc-nav__link nav-link">
+                <span class="list list--row align-items-center"><i class="las la-list"></i>
+                  <span class="d-block">
+                    Change App name
+                  </span>
+                </span>
+              </a>
+              <a href="#cnglogo" class="doc-nav__link nav-link">
+                <span class="list list--row align-items-center"><i class="las la-list"></i>
+                  <span class="d-block">
+                    App Icon Change
+                  </span>
+                </span>
+              </a>
+              <a href="#cngApplogo" class="doc-nav__link nav-link">
+                <span class="list list--row align-items-center"><i class="las la-list"></i>
+                  <span class="d-block">
+                    App Logo & Background Change
+                  </span>
+                </span>
+              </a>
+              <a href="#appTextChange" class="doc-nav__link nav-link">
+                <span class="list list--row align-items-center"><i class="las la-list"></i>
+                  <span class="d-block">
+                    App Text Change
+                  </span>
+                </span>
+              </a>
+
+              <a href="#apiurlchange" class="doc-nav__link nav-link">
+                <span class="list list--row align-items-center"><i class="las la-list"></i>
+                  <span class="d-block">
+                    API Base URL Change
+                  </span>
+                </span>
+              </a>
+              <a href="#cngColor" class="doc-nav__link nav-link">
+                <span class="list list--row align-items-center"><i class="las la-list"></i>
+                  <span class="d-block">
+                    Change App Color
+                  </span>
+                </span>
+              </a>
+              <a href="#cngPackName" class="doc-nav__link nav-link">
+                <span class="list list--row align-items-center"><i class="las la-list"></i>
+                  <span class="d-block">
+                    Change Package Name
+                  </span>
+                </span>
+              </a>
+
+
+              <a href="#sha1key" class="doc-nav__link nav-link">
+                <span class="list list--row align-items-center"><i class="las la-list"></i>
+                  <span class="d-block">
+                    Generate SHA-1 & SHA256 KEY
+                  </span>
+                </span>
+              </a>
+            </ul>
+          </li>
+          <li>
+            <a href="#publishapp" class="doc-nav__link nav-link">
+              <span class="list list--row align-items-center"><i class="las la-check-circle"></i>
+                <span class="d-block">
+                  Publish App
+                </span>
+              </span>
+            </a>
+          </li>
+          <li>
+            <a href="#support" class="doc-nav__link nav-link">
+              <span class="list list--row align-items-center"><i class="las la-headset"></i>
+                <span class="d-block">
+                  Support
+                </span>
+              </span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <div class="copyright">
+        <p class="m-0 text--white px-3 text-center">Copyright © <a href="https://viserlab.com/"
+            class="t-link t-link--canvas">ViserLab</a> 2026</p>
+      </div>
+    </div>
+    <div class="doc__body">
+      <div id="introduction" class="section--sm section--first">
+        <div class="list">
+          <div class="doc-head">
+            <div class="doc-head__content">
+              <h5 class="doc-head__title">
+                Esim
+              </h5>
+              <span class="doc-head__sub-title">
+                Esim - Cross Platform Mobile App for International eSim and Data Purchase
+              </span>
+            </div>
+          </div>
+          <div class="doc-body">
+            <ul class="list" style="--gap: 0.2rem">
+              <li><strong>Updated :</strong> 2026-03-04</li>
+              <li>
+                <strong>By : <a href="https://viserlab.com/">ViserLab</a></strong>
+              </li>
+              <li><strong>Email :</strong> <a class="t-link" href="mailto:support@viserlab.com">support@viserlab.com</a>
+              </li>
+            </ul>
+            <p class="mt-4 lg-text">
+              Introducing Esim – Cross Platform Mobile App for International eSim and Data Purchase!
+            </p>
+
+            <blockquote class="blockquote text--accent">
+              Stay connected anytime, anywhere with Esim, your smart solution for seamless global connectivity. Say
+              goodbye to physical SIM cards and experience the future of mobile communication with fast, secure, and
+              hassle-free eSIM activation.
+
+            </blockquote>
+
+            <p class="mt-4 lg-text">
+              Thank you for choosing the Esim Mobile Application. If you have any questions or require assistance not
+              covered in this documentation, please feel free to contact us via email. Our team is dedicated to
+              providing prompt and reliable support.
+
+
+              <br>
+              <br>
+              Thank you for your trust. Stay connected with Esim!
+            </p>
+
+          </div>
+        </div>
+      </div>
+      <div id="requirements" class="section--sm">
+        <div class="container-fluid p-0">
+          <div class="row g-0">
+            <div class="col-12">
+              <div class="doc-head">
+                <div class="doc-head__content">
+                  <h5 class="doc-head__title">Requirements</h5>
+                  <span class="doc-head__sub-title">
+                    Follow the below requirements.
+                  </span>`
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="row g-4 align-items-center">
+                <div class="col-xl-12">
+                  <div class="doc-body">
+                    <ul class="list list--base" style="--gap: 0.5rem">
+                      <li>Download and install Any one from these IDE(Android studio, Vs Code)</li>
+                      <li>Flutter and Dart must be successfully installed and setup on your device in order to edit this
+                        project.(Recommended Flutter SDK version: 3.38.7+)</li>
+                      <li>Install the Flutter and Dart plugins after setting up your editor</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="installation" class="section--sm">
+        <div class="container-fluid p-0">
+          <div class="row g-0">
+            <div class="col-12">
+              <div class="doc-head">
+                <div class="doc-head__content">
+                  <h5 class="doc-head__title">Installation</h5>
+                  <span class="doc-head__sub-title">
+                    Follow the below instruction to install the system.
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="row g-4 align-items-center">
+                <div class="col-xl-12">
+                  <div class="doc-body">
+                    <ul class="list list--base" style="--gap: 0.5rem">
+                      <li>Unzip the downloaded project and navigate to the flutter/file section, and open the project to
+                        the preferred IDE (Android Studio /
+                        Visual Code)</li>
+                      <li>Then complete the <a style="margin-left: 10px;" href="#mconfig"> main configuration
+                          section</a></li>
+                      <li>On IDE go to the pubspecs.yaml file then clicks on the Pub Get button top of the IDE to
+                        install the libraries.</li>
+                      <li>To run the project, connect an emulator or a real device.</li>
+                      <li>Then press the Run button to run the project on the connected device</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="folder" class="section--sm">
+        <div class="container-fluid p-0">
+          <div class="row g-0">
+            <div class="col-12">
+              <div class="doc-head">
+                <div class="doc-head__content">
+                  <h5 class="doc-head__title">Folder Structure</h5>
+                  <span class="doc-head__sub-title">
+                    Folders and files structure are showing below
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="row g-4 align-items-center">
+                <div class="col-xl-12">
+                  <div class="doc-body">
+                    <ul class="file-tree">
+                      <li><a href="#">assets</a>
+                        <ul>
+
+                          <li>fonts
+                            <ul></ul>
+                          </li>
+
+                          <li>
+                            images <ul></ul>
+                          </li>
+
+                        </ul>
+                      </li>
+
+                      <li><a href="#">lib</a>
+                        <ul>
+                          <li><a href="#">core</a>
+                            <ul>
+                              <li><a href="#">di_service</a>
+                                <ul></ul>
+                              </li>
+                              <li><a href="#">helper</a>
+                                <ul></ul>
+                              </li>
+                              <li><a href="#">route</a>
+                                <ul></ul>
+                              </li>
+                              <li><a href="#">theme</a>
+                                <ul></ul>
+                              </li>
+                              <li>
+                                <a href="#">utils</a>
+                                <ul></ul>
+                              </li>
+                            </ul>
+                          </li>
+
+                          <li><a href="#">data</a>
+                            <ul>
+                              <li><a href="#">controller</a>
+                                <ul></ul>
+                              </li>
+                              <li><a href="#">model</a>
+                                <ul></ul>
+                              </li>
+                              <li><a href="#">repo</a>
+                                <ul></ul>
+                              </li>
+                              <li><a href="#">services</a>
+                                <ul></ul>
+                              </li>
+                            </ul>
+                          </li>
+
+                          <li><a href="#">view</a>
+                            <ul>
+                              <li><a href="#">components</a>
+                                <ul></ul>
+                              </li>
+                              <li><a href="#">screens</a>
+                                <ul></ul>
+                              </li>
+                            </ul>
+                          </li>
+                          <li>main.dart</li>
+                          <li>push_notification_service.dart</li>
+                        </ul>
+                      </li>
+                      <li>pubspec.yaml</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="screens" class="section--sm">
+        <div class="container-fluid p-0">
+          <div class="row g-0">
+            <div class="col-12">
+              <div class="doc-head">
+                <div class="doc-head__content">
+                  <h5 class="doc-head__title">Screens</h5>
+                  <span class="doc-head__sub-title">
+                    Our app screens list are showing below
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="row g-4">
+                <div class="col-xl-12">
+                  <div class="doc-body h-auto">
+                    <ul class="list list--base" style="--gap: 0.5rem">
+                      <li>Splash Screen</li>
+                      <li>Onboard Screen</li>
+                      <li>Login and Registration Screen</li>
+                      <li>Forget Password and Reset Password Screen</li>
+                      <li>Email, Sms Screen</li>
+                      <li>Plan Screen</li>
+                      <li>Plan Details Screen</li>
+                      <li>Plan Screen with Country, Region and Global wise</li>
+                      <li>Top Up Screen</li>
+                      <li>Refferal Screen</li>
+                      <li>Security Screen</li>
+                      <li>Support Screen</li>
+                      <li>Campaign Plan Screen</li>
+                      <li>Esim Active and Expired Screen</li>
+                      <li>Esim Connect Screen</li>
+
+                      <li>Menu Screen</li>
+                      <li>Profile Screen</li>
+                      <li>Change Password Screen</li>
+                      <li>And more...</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="mconfig" class="section--sm">
+        <div class="container-fluid p-0">
+          <div class="row g-0">
+            <div class="col-12">
+              <div class="doc-head">
+                <div class="doc-head__content">
+                  <h5 class="doc-head__title">Main Configuration</h5>
+                  <span class="doc-head__sub-title">
+                    Application Setup
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="row g-4">
+                <div class="col-xl-10">
+                  <div class="doc-body h-auto">
+                    <div class="mt-4">
+                      <h5 id="flutterSetup">1. Flutter Setup</h5>
+                      <div class="container-fluid">
+                        <div class="row">
+                          <div class="col-12">
+                            <div class="row g-4">
+                              <p>Follow the guidelines in the following link to install the Flutter environment</p>
+                              <p>OFFICIAL DOC LINK: <a href="https://docs.flutter.dev/get-started/install"
+                                  target="_blank">https://docs.flutter.dev/get-started/install</a></p>
+
+
+
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <h5 id="firebaseSetup">2. Firebase Setup</h5>
+
+                    <ul style="list-style: none;">
+                      <li>
+                      <li><strong><i class="las la-dot-circle"></i>Go to <a href="https://firebase.google.com/"
+                            target="_blank">Firebase Website</a> , Create an Account and than Navigate to Firebase
+                          Console</strong></li>
+                      <strong><i class="las la-dot-circle"></i> Create a New Firebase Project:</strong>
+
+                      <ul style="list-style:none">
+                        <li><i class="las la-circle"></i>Once you are logged in, click on the "Add Project" button
+                          <br>
+                        </li>
+                        <li> <br>
+                          <img src="assets/images/firebase/1.png" style="width: 70%;">
+                        </li> <br>
+                        <li><i class="las la-circle"></i> Provide a name for your Firebase project. This name is for
+                          your reference and can be anything you like.</li> <br>
+                        <li>
+                          <img src="assets/images/firebase/2.png" style="width: 70%;">
+                        </li> <br>
+                        <li><i class="las la-circle"></i> <b>Choose or Create a Google Analytics Account:</b>
+                          <p> If you enabled Google Analytics, you'll need to choose an existing Google Analytics
+                            account
+                            or create a new one.</p>
+                        </li> <br>
+                        <li>
+                          <img src="assets/images/firebase/3.png" style="width: 70%;">
+                        </li>
+                        <br>
+                        <li><i class="las la-circle"></i> Click on 'Create Project.'</li>
+                        <br>
+                        <li>
+                          <img src="assets/images/firebase/4.png" style="width: 70%;">
+                        </li> <br>
+                        <li><i class="las la-circle"></i> <b>Wait for Project Creation:</b>
+                          <p>Firebase will take a moment to create your project. Once it's done, you'll be redirected
+                            to the project dashboard.</p>
+                        </li> <br>
+                        <li>
+                          <img src="assets/images/firebase/5.png" style="width: 70%;">
+                        </li> <br>
+                        <li><i class="las la-circle"></i> Click on 'Continue' </li> <br>
+                        <li>
+                          <img src="assets/images/firebase/6.png" style="width: 70%;">
+                        </li>
+                        <br>
+                      </ul>
+                      </li>
+
+
+
+                    </ul>
+                    <h5 id="firebaseAuth">3. Google Auth Setup</h5>
+                    <ul style="list-style: none;">
+
+
+                      <li><i class="las la-circle"></i> After Clicking All Products</li>
+
+                      <br>
+                      <img src="assets/images/firebase/1.png" style="width: 70%;" alt="">
+                      <br>
+                      <br>
+                      <li><i class="las la-circle"></i> Click on <b>Authentication</b></li> <br>
+                      <img src="assets/images/firebase/2.png" style="width: 70%;" alt="">
+                      <br>
+                      <br>
+                      <li><i class="las la-circle"></i> Click on <b>Get Started</b></li> <br>
+                      <img src="assets/images/firebase/3.png" style="width: 70%;" alt="">
+
+                      </li>
+                      <br> <br>
+
+                      <br>
+                      <li><i class="las la-circle"></i> Click on <b>Google</b></li> <br>
+                      <li>
+                        <img src="assets/images/firebase/auth/1.png" style="width: 70%;" alt="">
+                      </li>
+                      <br>
+                      <br>
+                      <li><i class="las la-circle"></i> Enable And Slected an <b>Email</b> and click on <b>Save
+                          Button</b></li>
+                      <li>
+                        <img src="assets/images/firebase/auth/2.png" style="width: 70%;" alt=""> <br>
+
+                        <br>
+
+
+
+                      <li><i class="las la-circle"></i> Auth Setup <b>Done</b></li>
+                      <li class="mt-4"><i class="las la-circle"></i> Now You Need To Setup <a
+                          href="#keystoreSetup"><b>Keystore</b></a> and
+                        <a href="#sha1key"><b>SHA-1</b></a> KEYsetup
+                      </li>
+
+
+                    </ul>
+                    </li>
+
+                    </ul>
+                    </li>
+                    <br><br>
+                    <hr>
+                    <br>
+                    <div id="flutterCli" class="mt-4">
+                      <h5>4. Flutter App Firebase Setup with CLI</h5>
+
+                      <ul style="list-style: none;">
+                        <br>
+                        <strong>First, go to your Firebase project.</strong><br>
+                        <li><i class="las la-circle"></i> Click the <b>Flutter icon</b>.</li>
+
+                        <img src="assets/images/firebase/flutter_cli/1.png" style="width: 70%;" alt="">
+
+                        <li><br><br><i class="las la-circle"></i> Click <b>Install Firebase CLI</b>.<br><br></li>
+                        <img src="assets/images/firebase/flutter_cli/2.png" style="width: 70%;" alt="">
+                        <li><br><br><i class="las la-circle"></i> Click <b>Install Node.js</b>.<br><br></li>
+                        <img src="assets/images/firebase/flutter_cli/3.png" style="width: 70%;" alt="">
+                        <li><br><br><i class="las la-circle"></i> Download the Node.js LTS version and install
+                          it.<br><br></li>
+
+                        <img src="assets/images/firebase/flutter_cli/4.png" style="width: 70%;" alt="">
+
+                        <img src="assets/images/firebase/flutter_cli/5.png" style="width: 70%;" alt="">
+
+                        <img src="assets/images/firebase/flutter_cli/6.png" style="width: 70%;" alt="">
+
+                        <li><i class="las la-circle"></i> After Node.js installation is complete, open a new terminal
+                          window.</li>
+                        <li><br><br><i class="las la-circle"></i> Run <b>npm install -g firebase-tools</b> in your
+                          terminal.<br><br></li>
+                        <li><br><br><i class="las la-circle"></i> Next, install FlutterFire CLI by running:<br><br></li>
+
+                        <div style="background-color: rgb(33, 33, 33); color: white; font-size: 25px; padding: 10px;">
+                          CMD &gt; dart pub global activate flutterfire_cli</div>
+                        <br>
+
+                        <img src="assets/images/firebase/flutter_cli/7.png" style="width: 70%;" alt="">
+
+                        <li><br><br><i class="las la-circle"></i> Set the FlutterFire CLI folder path in your system
+                          environment variables.<br>
+                        </li>
+                        <li><br><br><i class="las la-circle"></i> Copy this path:<br><br></li>
+                        <li><i class="las la-circle"></i> <b>C:\Users\Your-PC-Name\AppData\Local\Pub\Cache\bin</b><br>
+                          <br>
+                        </li>
+
+                        <img src="assets/images/firebase/flutter_cli/8.png" style="width: 70%;" alt="">
+                        <li><br><br><i class="las la-circle"></i> Open <b>Edit the system environment variables</b>.<br>
+                        </li>
+
+                        <img src="assets/images/firebase/flutter_cli/9.png" style="width: 70%;" alt="">
+                        <li><br><br><i class="las la-circle"></i> Click the <b>Environment Variables</b> button.<br><br>
+                        </li>
+
+                        <img src="assets/images/firebase/flutter_cli/10.png" style="width: 70%;" alt="">
+                        <li><br><br><i class="las la-circle"></i> Select <b>Path</b> and click <b>Edit</b>.<br><br>
+                        </li>
+                        <img src="assets/images/firebase/flutter_cli/11.png" style="width: 70%;" alt="">
+                        <li><br><br><i class="las la-circle"></i> Click <b>New</b>, paste the folder path, then click
+                          <b>OK</b>.<br><br>
+                        </li>
+                        <img src="assets/images/firebase/flutter_cli/12.png" style="width: 70%;" alt="">
+
+                        <li><br><br><i class="las la-circle"></i> Go back to your Firebase tab and click
+                          <b>Next</b>.<br><br>
+                        </li>
+
+                        <img src="assets/images/firebase/flutter_cli/13.png" style="width: 70%;" alt="">
+
+                        <li><br><br><i class="las la-circle"></i> Open your app project folder and run the commands
+                          below:<br><br>
+                        </li>
+                        <li><i class="las la-circle"></i> Make sure you are inside the Flutter project root before
+                          running these commands.</li>
+                        <div style="background-color: rgb(33, 33, 33); color: white; font-size: 25px; padding: 10px;">
+                          CMD 1 &gt; dart pub global activate flutterfire_cli</div>
+                        <br>
+                        <br>
+                        <div style="background-color: rgb(33, 33, 33); color: white; font-size: 25px; padding: 10px;">
+                          CMD 2 &gt; flutterfire configure --project=YOUR_FIREBASE_PROJECT_NAME</div>
+                        <br>
+                        <li><i class="las la-circle"></i> After <b>flutterfire configure</b> completes, it automatically
+                          generates
+                          <b>lib/firebase_options.dart</b>. It also configures Firebase platform files such as
+                          <b>android/app/google-services.json</b> and <b>ios/Runner/GoogleService-Info.plist</b>
+                          when those platforms are selected.
+                        </li>
+                        <li><i class="las la-circle"></i> Finally, restart your IDE/terminal if needed, then run your
+                          app to verify Firebase initialization works correctly.</li>
+                        <li>Now complete the following Step 1 and Step 2 options.</li>
+                        <br>
+                        <img src="assets/images/firebase/flutter_cli/14.png" style="width: 100%;" alt="">
+                        <li><br><br><i class="las la-circle"></i> When you run the second command, select the platforms
+                          you need and press Enter to continue.<br><br>
+                        </li>
+
+                        <img src="assets/images/firebase/flutter_cli/15.png" style="width: 70%;" alt="">
+
+                        <li><br><br><i class="las la-circle"></i> Firebase setup in your app is now complete.<br><br>
+                        </li>
+
+                      </ul>
+
+                    </div>
+                    <br><br>
+
+
+
+                    <div id="keystoreSetup" class="mt-4">
+                      <h5>5. App Key Store Setup</h5>
+
+
+
+                      <div tabindex="0" aria-hidden="true"><strong>How to generate a keystore in Android
+                          Studio</strong></div>
+                      <div>
+                        <div>
+                          <div dir="ltr">
+                            <p>To generate a keystore in Android Studio, follow these steps:
+                            </p>
+                            <ol>
+                              <li>Open your app code project in Android Studio.</li>
+                              <li>Click On <b>Tools > Flutter > Open Android Module in Android Studio</b></li>
+                              <div>
+                                <img src="assets/images/keystore/1.png" style="width: 70%;" alt="">
+                              </div>
+                              <li>Now Wait For app Gradle Update</b></li>
+                              <li>Click on the&nbsp;<strong>Build</strong>&nbsp;menu and
+                                select&nbsp;<strong>Generate Signed Bundle/APK</strong>.</li>
+                              <li data-sourcepos="7:1-7:112">In the&nbsp;<strong>Generate Signed Bundle or
+                                  APK</strong>&nbsp;dialog, select&nbsp;<strong>Android App
+                                  Bundle</strong>&nbsp;or&nbsp;<strong>APK</strong>&nbsp;and
+                                click&nbsp;<strong>Next</strong>.</li>
+                              <li data-sourcepos="8:1-9:62">Below the field for&nbsp;<strong>Key store path</strong>,
+                                click&nbsp;<strong>Create new</strong>.
+                                <div>
+                                  <div>
+                                    <img src="assets/images/keystore/2.png" style="width: 70%;" alt="">
+                                  </div>
+                                </div>
+                              </li>
+                              <li><strong>Click NEXT Button:</strong></li>
+                              <div>
+                                <img src="assets/images/keystore/3.png" style="width: 70%;" alt="">
+                              </div>
+
+                              <li data-sourcepos="10:1-15:46">On the&nbsp;<strong>New Key Store</strong>&nbsp;window,
+                                provide the following information for your keystore and key, as shown in the image
+                                below:
+                                <ul data-sourcepos="11:5-15:46">
+                                  <li data-sourcepos="11:5-11:189"><strong>Key store path:</strong>&nbsp;Select the
+                                    location where your keystore should be created. Also, a file name should be
+                                    added&nbsp;to the end of the location path with
+                                    the&nbsp;<code>.jks</code>&nbsp;extension.</li>
+                                  <li data-sourcepos="12:5-12:82"><strong>Password:</strong>&nbsp;Create and confirm a
+                                    secure password for your keystore.</li>
+                                  <li data-sourcepos="13:5-13:50"><strong>Alias:</strong>&nbsp;Enter&nbsp;a name for
+                                    your key.</li>
+
+                                  <li data-sourcepos="14:5-15:46"><strong>Password:</strong>&nbsp;Create and confirm a
+                                    secure password for your key.
+                                    <div>
+                                      <div>
+                                        <div>
+                                          <img src="assets/images/keystore/4.png" style="width: 70%;" alt="">
+                                          <p><b>Click Create New</b></p>
+                                          <img src="assets/images/keystore/5.png" style="width: 70%;" alt="">
+                                        </div>
+                                        <div aria-hidden="true">Select you path and name</div>
+                                        <div>
+                                          <div>
+                                            <img src="assets/images/keystore/6.png" style="width: 70%;" alt="">
+                                            <p><b>Click OK</b></p>
+                                            <img src="assets/images/keystore/7.png" style="width: 70%;" alt="">
+                                            <p><b>Fillup all field</b></p>
+                                          </div>
+                                          <div>
+                                            <div>
+                                              <img src="assets/images/keystore/8.png" style="width: 70%;" alt="">
+                                              <p><b>Click NEXT</b></p>
+                                              <img src="assets/images/keystore/9.png" style="width: 70%;" alt="">
+
+                                            </div>
+                                            <img src="assets/images/keystore/10.png" style="width: 70%;" alt="">
+                                            <p><b>You Will get a Release App bundle</b></p>
+                                            <img src="assets/images/keystore/11.png" style="width: 70%;" alt="">
+                                          </div>
+
+                                        </div>
+                                  </li>
+                                </ul>
+                              </li>
+                              <li data-sourcepos="16:1-17:0">Click&nbsp;<strong>OK</strong>&nbsp;to create the
+                                keystore and key.</li>
+                            </ol>
+                            <p data-sourcepos="18:1-18:87">Once you have created a keystore, you can use it to sign
+                              your Android apps for release.</p>
+                            <p data-sourcepos="20:1-20:21"><strong>Additional notes:</strong></p>
+                            <ul data-sourcepos="22:1-26:0">
+                              <li data-sourcepos="22:1-22:53">Choose a strong password for your keystore and key.</li>
+                              <li data-sourcepos="23:1-23:38">Store your keystore in a safe place.</li>
+                              <li data-sourcepos="24:1-24:34">Back up your keystore regularly.</li>
+                              <li data-sourcepos="25:1-26:0">If you lose your keystore, you will not be able to update
+                                your app on the Google Play Store.</li>
+                            </ul>
+                            <img src="assets/images/keystore/12.png" style="width: 50%;" alt="">
+                            <p data-sourcepos="27:1-27:14"><strong>Conclusion</strong></p>
+                            <p data-sourcepos="29:1-29:200">Generating a keystore is an important step in preparing
+                              your Android app for release. By following the steps above, you can create a keystore
+                              and key that will help to protect your app and your users.</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div id="LinkedInSetup" class="mt-4">
+                      <h5>6. LinkedIn Signup Setup</h5>
+
+
+
+                      <div tabindex="0" aria-hidden="true"><strong>How to Setup Lindin from vsCode</strong></div>
+                      <div>
+                        <div>
+                          <li>GoTo <b>Social Login Settings from Search Bar</b></li>
+                          <div>
+                            <img src="assets/images/keystore/14.png" style="width: 70%;" alt="">
+                          </div>
+                          <li>Click <b>LinkedIn>Configuration</b></li>
+                          <div>
+                            <img src="assets/images/keystore/15.png" style="width: 70%;" alt="">
+                          </div>
+                          <li>Copy and Replace the Client Id and Client Secert <b></b></li>
+                          <div>
+                            <img src="assets/images/keystore/13.png" style="width: 70%;" alt="">
+                          </div>
+
+
+
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <hr>
+                    <br>
+
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="appsetup" class="section--sm">
+        <div class="container-fluid p-0">
+          <div class="row g-0">
+            <div class="col-12">
+              <div class="doc-head">
+                <div class="doc-head__content">
+                  <h5 class="doc-head__title">Setup</h5>
+                  <span class="doc-head__sub-title">
+                    Application Setup
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="row g-4">
+                <div class="col-xl-10">
+                  <div class="doc-body h-auto">
+                    <div id="cngAppName" class="mt-4">
+                      <h5>1. Change App Name</h5>
+                      <p>
+                      <ul style="list-style: none;">
+                        <li><strong><i class="las la-dot-circle"></i> For Android</strong>
+                          <ul style="list-style:none">
+                            <li><i class="las la-circle"></i> Open AndroidMainfest.xml to IDE from
+                              android/app/src/main
+                            </li>
+                            <li><i class="las la-circle"></i> Change the label name inside the application tag from
+                              this
+                              file</li>
+                            <li>
+                              <img src="assets/images/app_setup/android_name.png" style="width: 70%;" alt="">
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="mt-4"><strong><i class="las la-dot-circle"></i> For IOS</strong>
+                          <ul style="list-style:none">
+                            <li><i class="las la-circle"></i> Open Info.plist file to IDE from ios/Runner</li>
+                            <li><i class="las la-circle"></i> Change the app name inside the dict. Please follow the
+                              below instruction.</li>
+                            <li>
+                              <img src="assets/images/app_setup/ios_name.png" style="width: 70%;" alt="">
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                      </p>
+                    </div>
+                    <div id="cnglogo" class="mt-4">
+                      <h5>2. App Icon Change</h5>
+                      <ul style="list-style: none;">
+                        <li><strong><i class="las la-dot-circle"></i> For Android</strong>
+                          <ul style="list-style:none">
+                            <li><i class="las la-circle"></i> Go to /android/app/src/main/res and replace all mipmap
+                              folder with your generated icon android folder.</li>
+                            <li>
+                              <img src="assets/images/android_logo.png" style="width: 70%;" alt="">
+                            </li>
+                          </ul>
+                        </li>
+                        <li class="mt-4"><strong><i class="las la-dot-circle"></i> For IOS</strong>
+                          <ul style="list-style:none">
+                            <li><i class="las la-circle"></i> Go to /ios/Runner and replace Assets.xcassets with your
+                              generated Assets.xcassets folder.</li>
+                            <li>
+                              <img src="assets/images/ios_logo.png" style="width: 70%;" alt="">
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                      <p><strong>Note:</strong> For different type of device we need to add different size of icon. So
+                        that you should to need to resize them. You can use <a href="https://appicon.co/"
+                          target="_blank">https://appicon.co/</a> platform to generate multiple size icons for android
+                        and ios. It will provide you the icon with a correct folder structure.</p>
+                    </div>
+                    <div id="cngApplogo" class="mt-4">
+                      <h5>3. App Logo Change</h5>
+
+                      <ul style="list-style: none;">
+                        <li>
+                          <ul style="list-style:none">
+
+                            <li><i class="las la-circle"></i> Go to the <b>AppFolder/assets/images/logo</b> and
+                              replace
+                              it with your logo image</li>
+                            <li>
+                              <img src="assets/images/app_setup/logoSet.png" class="w-50 mt-3" alt="">
+                            </li>
+                          </ul>
+                        </li>
+
+                      </ul>
+
+                    </div>
+
+
+                    <div id="appTextChange" class="mt-4">
+                      <h5>4. Text Change</h5>
+
+                      <ul id="appTextChange" style="list-style: none;"><i class="las la-dot-circle"></i> <b>Change App
+                          Text
+                        </b>
+                        <li>
+                          <ul style="list-style:none">
+                            <li><i class="las la-circle"></i> Go to the <b>AppFolder/lib/core/utils/my_strings.dart</b>
+                              and
+                              replace
+                              it with your Own TEXT.</li>
+                            <li>
+                              <img src="assets/images/app_setup/app_text.png" style="width: 70%;" alt="">
+                            </li>
+                          </ul>
+                        </li>
+
+                      </ul>
+
+
+                    </div>
+
+
+                    <div id="apiurlchange" class="mt-4">
+                      <h5>5. API Base URL</h5>
+                      <ul style="list-style: none;">
+                        <li><i class="las la-dot-circle"></i> Open <b>lib/core/utils/url_container.dart</b> file and
+                          change
+                          base url string
+                          <ul style="list-style:none">
+                            <li>
+                              <img src="assets/images/app_setup/project_url.png" style="width: 70%;" alt="">
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+                    <div id="cngColor" class="mt-4">
+                      <h5>6. Change App Color</h5>
+                      <ul style="list-style: none;">
+                        <li><i class="las la-dot-circle"></i> Open <b>lib/core/utils/my_color.dart</b> folder and
+                          Replace
+                          the
+                          value in the primary Color field with the prepared color code. From here, you can easily
+                          change the color of something else.
+                          <ul style="list-style:none">
+                            <li>
+                              <img src="assets/images/app_setup/app_color.png" style="width: 70%;" alt="">
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+                    <div id="cngPackName" class="mt-4">
+                      <h5>7. Change Package Name</h5>
+                      <ul style="list-style: none;">
+                        <li><i class="las la-dot-circle"></i> Right click on project folder and click on Replace in
+                          Files
+                          <ul style="list-style:none">
+                            <li>
+                              <img src="assets/images/app_setup/package_1.png" class="w-60 mt-3" alt="">
+                            </li>
+                          </ul>
+                        </li>
+                        <li>
+                          <br><i class="las la-dot-circle"></i> Search <b>dev.vlab.esim</b> in the first
+                          indicated
+                          box and your
+                          own package name in the second marked box. Then click Replace All button
+                          <ul style="list-style:none">
+                            <li>
+                              <img src="assets/images/app_setup/package_2.png" class="w-60 mt-3" alt="">
+                            </li>
+                          </ul>
+                        </li>
+                      </ul>
+                    </div>
+
+
+
+
+                    <div id="sha1key" id="add" class="mt-4">
+                      <h5>8. Generate SHA-1 & SHA256 KEY</h5> <strong> Open a Terminal:</strong>
+
+
+                      <ul style="list-style:none">
+                        <li>Open a terminal or command prompt in your project's root directory where the gradlew
+                          script is located.
+                          <br>
+                          <br>
+                          <div style="background-color: antiquewhite;padding: 20px">
+                            CMD: <b> cd android</b>
+                          </div>
+                          <br>
+                          Run the Gradle Signing Report Task:
+                          <br>
+                          In the terminal, run the following command:
+                          <br>
+                          Generate key code
+                        </li>
+                        <div style="background-color: antiquewhite;padding: 20px">
+                          CMD: <b style="margin-left: 10px;"> ./gradlew signingReport</b>
+
+                        </div><br>
+                        <img src="assets/images/app_setup/gradle_2.png" style="width: 50%;" alt="">
+                        <br><br>
+                        <li>To Generate Release SHA-1 KEY add <b>keystore.properties</b> in you app
+                        </li>
+                        <br><br>
+                        <li>Create the <b>key.properties</b> File:
+                          <br>
+
+                          First, create a new file named <b>key.properties</b> in the <b>android</b> directory of your
+                          Flutter project.
+                        </li>
+                        <li>
+                          <br>
+                        <li>
+                        <li>Edit <b>key.properties</b> File
+                          <br>
+                          Open the key.properties file in a text editor, and add the necessary configuration
+                          properties. A common use case for this file is to store the signing configuration for your
+                          Android app. Here's an example of what the key.properties file might look like for
+                        </li>
+                        <br>
+                        <li>
+                          <div style="background-color: antiquewhite;padding: 20px">
+                            <br>
+                            storeFile=/path/to/your/keystore.jks
+                            <br>
+                            storePassword=your_keystore_password
+                            <br>
+                            keyAlias=your_key_alias
+                            <br>
+                            keyPassword=your_key_password
+                            <br>
+                          </div> <br>
+
+                          <h5>Demo</h5>
+                          <img src="assets/images/app_setup/gradle.png" style="width: 50%;" alt="">
+
+
+                        </li>
+                      </ul>
+
+
+
+
+                      <ul style="list-style:none">
+                        <h5>Now Put This Key in Firebase App</h5>
+                        <li><i class="las la-circle"></i>Before putting this key, make sure your Firebase is connected
+                          to your Flutter app, or read this <a href="#flutterCli">Firebase setup with CLI Step</a>.</b>
+                        </li>
+                        <b>
+                          <h5>Fingerprint SHA-1 and SHA-256 key add here</h5>
+                          <img src="assets/images/app_setup/add_finger.png" style="width: 50%;" alt="">
+                        </b>
+
+                      </ul>
+
+                    </div>
+
+                    <!-- END -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="publishapp" class="section--sm">
+        <div class="container-fluid p-0">
+          <div class="row g-0">
+            <div class="col-12">
+              <div class="doc-head">
+                <div class="doc-head__content">
+                  <h5 class="doc-head__title">Publish App</h5>
+                  <span class="doc-head__sub-title">
+                    Follow below instruction to publish the app
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="row g-4">
+                <div class="col-xl-6">
+                  <div class="doc-body h-auto">
+                    <h5>1. Android</h5>
+                    <p>Follow the guidelines in the following link to publish the app to Play Store.</p>
+                    <p>PlayStore: <a href="https://flutter.dev/docs/deployment/android"
+                        target="_blank">https://flutter.dev/docs/deployment/android</a></p>
+                    <h5 class="mt-5">2. IOS</h5>
+                    <p>Follow the guidelines in the following link to publish the app to AppStore.</p>
+                    <p>AppStore: <a href="https://flutter.dev/docs/deployment/ios"
+                        target="_blank">https://flutter.dev/docs/deployment/ios</a></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="support" class="section--sm">
+        <div class="container-fluid p-0">
+          <div class="row g-0">
+            <div class="col-12">
+              <div class="doc-head">
+                <div class="doc-head__content">
+                  <h5 class="doc-head__title">Support</h5>
+                  <span class="doc-head__sub-title">
+                    Support information details
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+              <div class="row g-4">
+                <div class="col-xl-6">
+                  <div class="doc-body h-auto">
+                    <p>
+                      Once again, thank you so much for purchasing this App. As I said at the beginning, I'd be glad
+                      to
+                      help you if you have any questions relating to this App. No guarantees, but I'll do my best to
+                      assist. If you have any queries, please feel free to contact us at Support Center.
+                    </p>
+                    <p class="m-0 xl-text">
+                      Email Us:
+                      <a href="https://viserlab.com/support" class="t-link">
+                        https://viserlab.com/support
+                      </a>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- jQuery library -->
+  <script src="assets/js/lib/jquery-3.6.0.min.js"></script>
+  <!-- bootstrap 5 js -->
+  <script src="assets/js/lib/bootstrap.bundle.min.js"></script>
+  <!-- Simplebar Js  -->
+  <script src="assets/js/lib/simplebar.js"></script>
+  <script src="assets/js/lib/file-explore.js"></script>
+  <!-- main js -->
+  <script src="assets/js/app.js"></script>
+  <script>
+    $(document).ready(function () {
+      $(".file-tree").filetree();
+    });
+  </script>
+</body>
+
+</html>

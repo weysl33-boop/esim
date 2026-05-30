@@ -1,0 +1,70 @@
+# Local secrets and credentials
+*.local.md
+*.secret
+*.secrets
+*.key
+*.pem
+*.p12
+*.jks
+*.keystore
+.env
+.env.*
+!*.env.example
+auth.json
+key.properties
+google-services.json
+GoogleService-Info.plist
+firebase_options.dart
+push_config.json
+configs.js
+database.sql
+weairsim-secrets-inventory*.md
+
+# Build outputs and generated caches
+build/
+.dart_tool/
+.gradle/
+.pub-cache/
+.pub/
+node_modules/
+vendor/
+storage/*.key
+public/build/
+public/hot
+public/storage
+
+# Packaged archives and deployment artifacts
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+*.apk
+*.aab
+*.ipa
+
+# Local screenshots and operational captures
+*.png
+*.jpg
+*.jpeg
+*.webp
+!**/assets/**/*.png
+!**/assets/**/*.jpg
+!**/assets/**/*.jpeg
+!**/assets/**/*.webp
+!**/Documentation/**/*.png
+!**/Documentation/**/*.jpg
+!**/Documentation/**/*.jpeg
+!**/Documentation/**/*.webp
+
+# IDE and OS files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log
+yarn-error.log
