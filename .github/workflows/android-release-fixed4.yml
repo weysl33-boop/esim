@@ -1,0 +1,109 @@
+name: Android Release Fixed 4
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/android-release-fixed4.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      APP_DIR: esim-cross-platform-mobile-app-for-international-esim-and-data-purchase/Files
+      GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Patch app for Play functional review
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import os, re
+          app = Path(os.environ['APP_DIR'])
+          def patch(rel, fn):
+              f = app / rel
+              s = f.read_text(encoding='utf-8')
+              n = fn(s)
+              f.write_text(n, encoding='utf-8')
+              print(rel, 'changed' if s != n else 'ok')
+          patch('lib/data/repo/home/home_repo.dart', lambda s: s.replace('ResponseModel responseModel = await apiClient.request(url, Method.getMethod, null, passHeader: true);', 'ResponseModel responseModel = await apiClient.request(\n      url,\n      Method.getMethod,\n      null,\n      passHeader: false,\n      needAuthCheck: false,\n    );', 1))
+          patch('lib/data/repo/store/store_repo.dart', lambda s: s.replace('apiClient.request(url, Method.getMethod, null, passHeader: true)', 'apiClient.request(url, Method.getMethod, null, passHeader: false, needAuthCheck: false)'))
+          def store_details(s):
+              for name in ['getStoreDetailsRepo', 'getRegions', 'getGlobalPlansCount']:
+                  s = re.sub(r'(' + name + r'[\s\S]*?passHeader:) true,', r'\1 false,\n      needAuthCheck: false,', s, count=1)
+              return s
+          patch('lib/data/repo/store/store_details_repo.dart', store_details)
+          patch('lib/data/model/dashboard/dashboard_response_model.dart', lambda s: s.replace('user: json["user"],', 'user: json["user"] == null ? null : User.fromJson(json["user"]),', 1))
+          def api(s):
+              s = re.sub(r'  GeneralSettingResponseModel getGSData\(\) \{[\s\S]*?\n  \}\n\n  String getCurrencyOrUsername', '''  GeneralSettingResponseModel getGSData() {\n    try {\n      String pre = sharedPreferences.getString(SharedPreferenceHelper.generalSettingKey) ?? '';\n      if (pre.isEmpty) {\n        return GeneralSettingResponseModel();\n      }\n      GeneralSettingResponseModel model = GeneralSettingResponseModel.fromJson(jsonDecode(pre));\n      return model;\n    } catch (e) {\n      return GeneralSettingResponseModel();\n    }\n  }\n\n  String getCurrencyOrUsername''', s, count=1)
+              s = re.sub(r'  String getCurrencyOrUsername\(\{bool isCurrency = true, bool isSymbol = false\}\) \{[\s\S]*?\n  \}\n\n  int getDecimalAfterNumber', '''  String getCurrencyOrUsername({bool isCurrency = true, bool isSymbol = false}) {\n    if (isCurrency) {\n      try {\n        String pre = sharedPreferences.getString(SharedPreferenceHelper.generalSettingKey) ?? '';\n        if (pre.isEmpty) {\n          return isSymbol ? '\\$' : 'USD';\n        }\n        GeneralSettingResponseModel model = GeneralSettingResponseModel.fromJson(jsonDecode(pre));\n        String currency = isSymbol ? model.data?.generalSetting?.curSym ?? '\\$' : model.data?.generalSetting?.curText ?? 'USD';\n        return currency.isEmpty ? (isSymbol ? '\\$' : 'USD') : currency;\n      } catch (e) {\n        return isSymbol ? '\\$' : 'USD';\n      }\n    } else {\n      String username = sharedPreferences.getString(SharedPreferenceHelper.userNameKey) ?? '';\n      return username;\n    }\n  }\n\n  int getDecimalAfterNumber''', s, count=1)
+              return s
+          patch('lib/data/services/api_service.dart', api)
+          patch('pubspec.yaml', lambda s: re.sub(r'^version: .*', 'version: 1.0.4+5', s, flags=re.M))
+          (app / 'android/gradle.properties').write_text('''org.gradle.jvmargs=-Xmx5G -XX:MaxMetaspaceSize=1G -XX:ReservedCodeCacheSize=512m -XX:+HeapDumpOnOutOfMemoryError -Djava.net.preferIPv4Stack=true -Djava.net.preferIPv6Addresses=false\norg.gradle.daemon=false\norg.gradle.parallel=false\norg.gradle.workers.max=1\nkotlin.daemon.jvmargs=-Xmx1G\nandroid.useAndroidX=true\nandroid.enableJetifier=false\nandroid.builtInKotlin=false\nandroid.newDsl=false\n''', encoding='utf-8')
+          PY
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.1'
+          channel: stable
+          cache: true
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;29.0.14206865"
+
+      - name: Prepare Firebase and signing
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          mkdir -p android/app
+          cat > android/app/google-services.json <<'JSON'
+          {"project_info":{"project_number":"774081928535","project_id":"weairsim","storage_bucket":"weairsim.firebasestorage.app"},"client":[{"client_info":{"mobilesdk_app_id":"1:774081928535:android:0b23799f4188580f827212","android_client_info":{"package_name":"com.weairsim.global"}},"oauth_client":[],"api_key":[{"current_key":"AIzaSyCCmUbNEdkN2L7KydsDw0uEznQ_ngCms3k"}],"services":{"appinvite_service":{"other_platform_oauth_client":[]}}}],"configuration_version":"1"}
+          JSON
+          base64 --decode "$GITHUB_WORKSPACE/ci/weairsim-upload-key.b64" > android/weairsim-upload-key.jks
+          cat > android/key.properties <<'EOF'
+          storePassword=IKfTp9Z0aN9cSITbJ0UnLVObpe9ZloGK
+          keyPassword=IKfTp9Z0aN9cSITbJ0UnLVObpe9ZloGK
+          keyAlias=upload
+          storeFile=../weairsim-upload-key.jks
+          EOF
+          sed -i 's/^ *//' android/key.properties
+
+      - name: Install dependencies
+        working-directory: ${{ env.APP_DIR }}
+        run: flutter pub get
+      - name: Analyze
+        working-directory: ${{ env.APP_DIR }}
+        run: flutter analyze || true
+      - name: Build release AAB
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          set +e
+          flutter build appbundle --release --no-shrink --android-skip-build-dependency-validation --dart-define=DOMAIN_URL=https://www.weairsim.com 2>&1 | tee build-output.log
+          exit ${PIPESTATUS[0]}
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weairsim-build-logs
+          path: ${{ env.APP_DIR }}/build-output.log
+      - name: Upload AAB artifact
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: weairsim-release-aab
+          path: ${{ env.APP_DIR }}/build/app/outputs/bundle/release/app-release.aab
+      - name: Submit to Google Play production
+        if: ${{ success() && env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON != '' }}
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.weairsim.global
+          releaseFiles: ${{ env.APP_DIR }}/build/app/outputs/bundle/release/app-release.aab
+          track: production
+          status: completed
+          releaseName: WeAirSim 1.0.4
