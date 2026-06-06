@@ -1,0 +1,189 @@
+name: Android Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "esim-cross-platform-mobile-app-for-international-esim-and-data-purchase/Files/**"
+      - ".github/workflows/android-release.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      APP_DIR: esim-cross-platform-mobile-app-for-international-esim-and-data-purchase/Files
+      GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Patch Play review functional fixes
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import os, re
+
+          app = Path(os.environ["APP_DIR"])
+
+          def read(rel):
+              return (app / rel).read_text(encoding="utf-8")
+
+          def write(rel, text):
+              (app / rel).write_text(text, encoding="utf-8")
+
+          def replace(rel, old, new):
+              text = read(rel)
+              if old not in text:
+                  raise SystemExit(f"Patch anchor not found in {rel}: {old[:80]!r}")
+              write(rel, text.replace(old, new))
+
+          # Public catalog/home endpoints must not send an empty or expired Bearer token on fresh installs.
+          replace(
+              "lib/data/repo/home/home_repo.dart",
+              "ResponseModel responseModel = await apiClient.request(url, Method.getMethod, null, passHeader: true);",
+              "ResponseModel responseModel = await apiClient.request(\n      url,\n      Method.getMethod,\n      null,\n      passHeader: false,\n      needAuthCheck: false,\n    );",
+          )
+
+          text = read("lib/data/repo/store/store_repo.dart")
+          text = text.replace(
+              "apiClient.request(url, Method.getMethod, null, passHeader: true)",
+              "apiClient.request(url, Method.getMethod, null, passHeader: false, needAuthCheck: false)",
+          )
+          write("lib/data/repo/store/store_repo.dart", text)
+
+          text = read("lib/data/repo/store/store_details_repo.dart")
+          text = re.sub(r"passHeader: true,\n    \);\n    return responseModel;\n  \}\n\n  Future<ResponseModel> getPlanRepo", "passHeader: false,\n      needAuthCheck: false,\n    );\n    return responseModel;\n  }\n\n  Future<ResponseModel> getPlanRepo", text, count=1)
+          text = re.sub(r"passHeader: true,\n    \);\n  \}\n\n  Future<ResponseModel> getGlobalPlansCount", "passHeader: false,\n      needAuthCheck: false,\n    );\n  }\n\n  Future<ResponseModel> getGlobalPlansCount", text, count=1)
+          text = re.sub(r"passHeader: true,\n    \);\n    return responseModel;\n  \}\n}\n", "passHeader: false,\n      needAuthCheck: false,\n    );\n    return responseModel;\n  }\n}\n", text, count=1)
+          write("lib/data/repo/store/store_details_repo.dart", text)
+
+          replace(
+              "lib/data/model/dashboard/dashboard_response_model.dart",
+              "user: json[\"user\"],",
+              "user: json[\"user\"] == null ? null : User.fromJson(json[\"user\"]),",
+          )
+
+          # General-settings cache must be optional on a clean Play review device.
+          api = read("lib/data/services/api_service.dart")
+          api = api.replace(
+              """  GeneralSettingResponseModel getGSData() {\n    String pre = sharedPreferences.getString(SharedPreferenceHelper.generalSettingKey) ?? '';\n    GeneralSettingResponseModel model = GeneralSettingResponseModel.fromJson(jsonDecode(pre));\n    return model;\n  }""",
+              """  GeneralSettingResponseModel getGSData() {\n    try {\n      String pre = sharedPreferences.getString(SharedPreferenceHelper.generalSettingKey) ?? '';\n      if (pre.isEmpty) {\n        return GeneralSettingResponseModel();\n      }\n      GeneralSettingResponseModel model = GeneralSettingResponseModel.fromJson(jsonDecode(pre));\n      return model;\n    } catch (e) {\n      return GeneralSettingResponseModel();\n    }\n  }""",
+          )
+          api = api.replace(
+              """  String getCurrencyOrUsername({bool isCurrency = true, bool isSymbol = false}) {\n    if (isCurrency) {\n      String pre = sharedPreferences.getString(SharedPreferenceHelper.generalSettingKey) ?? '';\n      GeneralSettingResponseModel model = GeneralSettingResponseModel.fromJson(jsonDecode(pre));\n      String currency = isSymbol ? model.data?.generalSetting?.curSym ?? '' : model.data?.generalSetting?.curText ?? '';\n      return currency;\n    } else {\n      String username = sharedPreferences.getString(SharedPreferenceHelper.userNameKey) ?? '';\n      return username;\n    }\n  }""",
+              """  String getCurrencyOrUsername({bool isCurrency = true, bool isSymbol = false}) {\n    if (isCurrency) {\n      try {\n        String pre = sharedPreferences.getString(SharedPreferenceHelper.generalSettingKey) ?? '';\n        if (pre.isEmpty) {\n          return isSymbol ? '\\$' : 'USD';\n        }\n        GeneralSettingResponseModel model = GeneralSettingResponseModel.fromJson(jsonDecode(pre));\n        String currency = isSymbol ? model.data?.generalSetting?.curSym ?? '\\$' : model.data?.generalSetting?.curText ?? 'USD';\n        return currency.isEmpty ? (isSymbol ? '\\$' : 'USD') : currency;\n      } catch (e) {\n        return isSymbol ? '\\$' : 'USD';\n      }\n    } else {\n      String username = sharedPreferences.getString(SharedPreferenceHelper.userNameKey) ?? '';\n      return username;\n    }\n  }""",
+          )
+          write("lib/data/services/api_service.dart", api)
+
+          # Keep the upload version above the rejected bundle.
+          pubspec = read("pubspec.yaml")
+          pubspec = re.sub(r"^version: .*", "version: 1.0.4+5", pubspec, flags=re.M)
+          write("pubspec.yaml", pubspec)
+          PY
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.44.1"
+          channel: stable
+          cache: true
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install Android packages
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;29.0.14206865"
+
+      - name: Decode Firebase config
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          mkdir -p android/app
+          if [ -n "${{ secrets.GOOGLE_SERVICES_JSON_B64 }}" ]; then
+            echo "${{ secrets.GOOGLE_SERVICES_JSON_B64 }}" | base64 --decode > android/app/google-services.json
+          else
+            cat > android/app/google-services.json <<'JSON'
+          {
+            "project_info": {
+              "project_number": "774081928535",
+              "project_id": "weairsim",
+              "storage_bucket": "weairsim.firebasestorage.app"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:774081928535:android:0b23799f4188580f827212",
+                  "android_client_info": {
+                    "package_name": "com.weairsim.global"
+                  }
+                },
+                "oauth_client": [],
+                "api_key": [
+                  {
+                    "current_key": "AIzaSyCCmUbNEdkN2L7KydsDw0uEznQ_ngCms3k"
+                  }
+                ],
+                "services": {
+                  "appinvite_service": {
+                    "other_platform_oauth_client": []
+                  }
+                }
+              }
+            ],
+            "configuration_version": "1"
+          }
+          JSON
+          fi
+
+      - name: Decode upload keystore
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          if [ -z "${{ secrets.WEAIRSIM_UPLOAD_KEYSTORE_B64 }}" ] || [ -z "${{ secrets.WEAIRSIM_KEYSTORE_PASSWORD }}" ]; then
+            echo "Missing WEAIRSIM upload keystore secrets. Cannot create a Play-accepted signed release."
+            exit 1
+          fi
+          echo "${{ secrets.WEAIRSIM_UPLOAD_KEYSTORE_B64 }}" | base64 --decode > android/weairsim-upload-key.jks
+          cat > android/key.properties <<EOF
+          storeFile=weairsim-upload-key.jks
+          storePassword=${{ secrets.WEAIRSIM_KEYSTORE_PASSWORD }}
+          keyAlias=upload
+          keyPassword=${{ secrets.WEAIRSIM_KEYSTORE_PASSWORD }}
+          EOF
+          sed -i 's/^ *//' android/key.properties
+
+      - name: Install dependencies
+        working-directory: ${{ env.APP_DIR }}
+        run: flutter pub get
+
+      - name: Analyze
+        working-directory: ${{ env.APP_DIR }}
+        run: flutter analyze || true
+
+      - name: Build app bundle
+        working-directory: ${{ env.APP_DIR }}
+        run: flutter build appbundle --release --dart-define=DOMAIN_URL=https://www.weairsim.com
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: weairsim-release-aab
+          path: ${{ env.APP_DIR }}/build/app/outputs/bundle/release/app-release.aab
+
+      - name: Upload to Google Play production
+        if: ${{ env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON != '' }}
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.weairsim.global
+          releaseFiles: ${{ env.APP_DIR }}/build/app/outputs/bundle/release/app-release.aab
+          track: production
+          status: completed
+          releaseName: WeAirSim 1.0.4
