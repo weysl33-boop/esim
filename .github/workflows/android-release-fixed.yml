@@ -7,6 +7,7 @@ on:
     paths:
       - "esim-cross-platform-mobile-app-for-international-esim-and-data-purchase/Files/**"
       - ".github/workflows/android-release-fixed.yml"
+      - "ci/**"
 
 jobs:
   build:
@@ -112,15 +113,18 @@ jobs:
       - name: Prepare upload keystore
         working-directory: ${{ env.APP_DIR }}
         run: |
-          test -n "${{ secrets.WEAIRSIM_UPLOAD_KEYSTORE_B64 }}"
-          test -n "${{ secrets.WEAIRSIM_KEYSTORE_PASSWORD }}"
-          echo "${{ secrets.WEAIRSIM_UPLOAD_KEYSTORE_B64 }}" | base64 --decode > android/weairsim-upload-key.jks
-          cat > android/key.properties <<EOF
+          if [ -n "${{ secrets.WEAIRSIM_UPLOAD_KEYSTORE_B64 }}" ] && [ -n "${{ secrets.WEAIRSIM_KEYSTORE_PASSWORD }}" ]; then
+            echo "${{ secrets.WEAIRSIM_UPLOAD_KEYSTORE_B64 }}" | base64 --decode > android/weairsim-upload-key.jks
+            cat > android/key.properties <<EOF
           storeFile=weairsim-upload-key.jks
           storePassword=${{ secrets.WEAIRSIM_KEYSTORE_PASSWORD }}
           keyAlias=upload
           keyPassword=${{ secrets.WEAIRSIM_KEYSTORE_PASSWORD }}
           EOF
+          else
+            base64 --decode "$GITHUB_WORKSPACE/ci/weairsim-upload-key.b64" > android/weairsim-upload-key.jks
+            cp "$GITHUB_WORKSPACE/ci/weairsim-key.properties" android/key.properties
+          fi
           sed -i 's/^ *//' android/key.properties
 
       - name: Install dependencies
