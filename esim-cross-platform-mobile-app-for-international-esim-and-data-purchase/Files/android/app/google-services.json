@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "774081928535",
+    "project_id": "weairsim",
+    "storage_bucket": "weairsim.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:774081928535:android:0b23799f4188580f827212",
+        "android_client_info": {
+          "package_name": "com.weairsim.www"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCCmUbNEdkN2L7KydsDw0uEznQ_ngCms3k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
