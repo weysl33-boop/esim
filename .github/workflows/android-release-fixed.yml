@@ -1,0 +1,152 @@
+name: Android Release Fixed
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "esim-cross-platform-mobile-app-for-international-esim-and-data-purchase/Files/**"
+      - ".github/workflows/android-release-fixed.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      APP_DIR: esim-cross-platform-mobile-app-for-international-esim-and-data-purchase/Files
+      GOOGLE_PLAY_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Apply functional-review fixes
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import os, re
+          app = Path(os.environ["APP_DIR"])
+          def p(rel): return app / rel
+          def rw(rel, fn):
+              path = p(rel)
+              text = path.read_text(encoding="utf-8")
+              new = fn(text)
+              path.write_text(new, encoding="utf-8")
+              print(rel, "changed" if new != text else "already-ok")
+
+          def home_repo(text):
+              return text.replace(
+                  "ResponseModel responseModel = await apiClient.request(url, Method.getMethod, null, passHeader: true);",
+                  "ResponseModel responseModel = await apiClient.request(\n      url,\n      Method.getMethod,\n      null,\n      passHeader: false,\n      needAuthCheck: false,\n    );",
+                  1,
+              )
+
+          def store_repo(text):
+              return text.replace(
+                  "apiClient.request(url, Method.getMethod, null, passHeader: true)",
+                  "apiClient.request(url, Method.getMethod, null, passHeader: false, needAuthCheck: false)",
+              )
+
+          def store_details(text):
+              text = re.sub(r"(getStoreDetailsRepo[\s\S]*?passHeader:) true,", r"\1 false,\n      needAuthCheck: false,", text, count=1)
+              text = re.sub(r"(getRegions[\s\S]*?passHeader:) true,", r"\1 false,\n      needAuthCheck: false,", text, count=1)
+              text = re.sub(r"(getGlobalPlansCount[\s\S]*?passHeader:) true,", r"\1 false,\n      needAuthCheck: false,", text, count=1)
+              return text
+
+          def dashboard(text):
+              return text.replace(
+                  'user: json["user"],',
+                  'user: json["user"] == null ? null : User.fromJson(json["user"]),',
+                  1,
+              )
+
+          def api_service(text):
+              text = re.sub(
+                  r"  GeneralSettingResponseModel getGSData\(\) \{[\s\S]*?\n  \}\n\n  String getCurrencyOrUsername",
+                  """  GeneralSettingResponseModel getGSData() {\n    try {\n      String pre = sharedPreferences.getString(SharedPreferenceHelper.generalSettingKey) ?? '';\n      if (pre.isEmpty) {\n        return GeneralSettingResponseModel();\n      }\n      GeneralSettingResponseModel model = GeneralSettingResponseModel.fromJson(jsonDecode(pre));\n      return model;\n    } catch (e) {\n      return GeneralSettingResponseModel();\n    }\n  }\n\n  String getCurrencyOrUsername""",
+                  text,
+                  count=1,
+              )
+              text = re.sub(
+                  r"  String getCurrencyOrUsername\(\{bool isCurrency = true, bool isSymbol = false\}\) \{[\s\S]*?\n  \}\n\n  int getDecimalAfterNumber",
+                  """  String getCurrencyOrUsername({bool isCurrency = true, bool isSymbol = false}) {\n    if (isCurrency) {\n      try {\n        String pre = sharedPreferences.getString(SharedPreferenceHelper.generalSettingKey) ?? '';\n        if (pre.isEmpty) {\n          return isSymbol ? '\\$' : 'USD';\n        }\n        GeneralSettingResponseModel model = GeneralSettingResponseModel.fromJson(jsonDecode(pre));\n        String currency = isSymbol ? model.data?.generalSetting?.curSym ?? '\\$' : model.data?.generalSetting?.curText ?? 'USD';\n        return currency.isEmpty ? (isSymbol ? '\\$' : 'USD') : currency;\n      } catch (e) {\n        return isSymbol ? '\\$' : 'USD';\n      }\n    } else {\n      String username = sharedPreferences.getString(SharedPreferenceHelper.userNameKey) ?? '';\n      return username;\n    }\n  }\n\n  int getDecimalAfterNumber""",
+                  text,
+                  count=1,
+              )
+              return text
+
+          rw("lib/data/repo/home/home_repo.dart", home_repo)
+          rw("lib/data/repo/store/store_repo.dart", store_repo)
+          rw("lib/data/repo/store/store_details_repo.dart", store_details)
+          rw("lib/data/model/dashboard/dashboard_response_model.dart", dashboard)
+          rw("lib/data/services/api_service.dart", api_service)
+          rw("pubspec.yaml", lambda s: re.sub(r"^version: .*", "version: 1.0.4+5", s, flags=re.M))
+          PY
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.44.1"
+          channel: stable
+          cache: true
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Install Android packages
+        run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;29.0.14206865"
+
+      - name: Prepare Firebase config
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          mkdir -p android/app
+          if [ -n "${{ secrets.GOOGLE_SERVICES_JSON_B64 }}" ]; then
+            echo "${{ secrets.GOOGLE_SERVICES_JSON_B64 }}" | base64 --decode > android/app/google-services.json
+          else
+            cat > android/app/google-services.json <<'JSON'
+          {"project_info":{"project_number":"774081928535","project_id":"weairsim","storage_bucket":"weairsim.firebasestorage.app"},"client":[{"client_info":{"mobilesdk_app_id":"1:774081928535:android:0b23799f4188580f827212","android_client_info":{"package_name":"com.weairsim.global"}},"oauth_client":[],"api_key":[{"current_key":"AIzaSyCCmUbNEdkN2L7KydsDw0uEznQ_ngCms3k"}],"services":{"appinvite_service":{"other_platform_oauth_client":[]}}}],"configuration_version":"1"}
+          JSON
+          fi
+
+      - name: Prepare upload keystore
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          test -n "${{ secrets.WEAIRSIM_UPLOAD_KEYSTORE_B64 }}"
+          test -n "${{ secrets.WEAIRSIM_KEYSTORE_PASSWORD }}"
+          echo "${{ secrets.WEAIRSIM_UPLOAD_KEYSTORE_B64 }}" | base64 --decode > android/weairsim-upload-key.jks
+          cat > android/key.properties <<EOF
+          storeFile=weairsim-upload-key.jks
+          storePassword=${{ secrets.WEAIRSIM_KEYSTORE_PASSWORD }}
+          keyAlias=upload
+          keyPassword=${{ secrets.WEAIRSIM_KEYSTORE_PASSWORD }}
+          EOF
+          sed -i 's/^ *//' android/key.properties
+
+      - name: Install dependencies
+        working-directory: ${{ env.APP_DIR }}
+        run: flutter pub get
+
+      - name: Analyze
+        working-directory: ${{ env.APP_DIR }}
+        run: flutter analyze || true
+
+      - name: Build release AAB
+        working-directory: ${{ env.APP_DIR }}
+        run: flutter build appbundle --release --dart-define=DOMAIN_URL=https://www.weairsim.com
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: weairsim-release-aab
+          path: ${{ env.APP_DIR }}/build/app/outputs/bundle/release/app-release.aab
+
+      - name: Submit to Google Play production
+        if: ${{ env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON != '' }}
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ env.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+          packageName: com.weairsim.global
+          releaseFiles: ${{ env.APP_DIR }}/build/app/outputs/bundle/release/app-release.aab
+          track: production
+          status: completed
+          releaseName: WeAirSim 1.0.4
