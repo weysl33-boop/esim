@@ -43,7 +43,7 @@ if (keystorePropertiesFile.exists()) {
 
 
 android {
-    namespace = "com.weairsim.global"
+    namespace = "com.weairsim.www"
     compileSdk = 36
     ndkVersion = "29.0.14206865"
 
@@ -58,10 +58,7 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.weairsim.global"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        applicationId = "com.weairsim.www"
         minSdk = flutter.minSdkVersion
         targetSdk = 36
         versionCode = flutter.versionCode
@@ -70,7 +67,6 @@ android {
 
       signingConfigs {
         create("release") {
-            // Use Elvis operator for null check and conversion
             storeFile = keystoreProperties["storeFile"]?.let { file(it.toString()) }
             storePassword = keystoreProperties["storePassword"]?.toString()
             keyAlias = keystoreProperties["keyAlias"]?.toString()
@@ -82,8 +78,6 @@ android {
   buildTypes {
         getByName("release") {
             signingConfig = signingConfigs.getByName("release")
-            // These properties are directly available on the 'BuildType' object
-            // They are not 'unresolved references' if accessed directly within the lambda.
             isMinifyEnabled = true
             isShrinkResources = true
 
@@ -91,7 +85,6 @@ android {
     }
     packaging {
         jniLibs {
-            // 🔑 Critical for 16KB support
             useLegacyPackaging = false
         }
     }  
@@ -99,7 +92,7 @@ android {
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
     implementation("org.slf4j:slf4j-api:2.0.17")
-    implementation("org.slf4j:slf4j-simple:2.0.17") // Or any other logging implementation
+    implementation("org.slf4j:slf4j-simple:2.0.17")
     implementation("com.google.android.material:material:1.9.0")
 }
 flutter {
