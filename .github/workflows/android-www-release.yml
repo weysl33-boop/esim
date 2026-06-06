@@ -1,0 +1,81 @@
+name: Android WWW Release
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/android-www-release.yml"
+      - "esim-cross-platform-mobile-app-for-international-esim-and-data-purchase/Files/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      APP_DIR: esim-cross-platform-mobile-app-for-international-esim-and-data-purchase/Files
+      PACKAGE_NAME: com.weairsim.www
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.44.1'
+          channel: stable
+          cache: true
+      - uses: android-actions/setup-android@v3
+      - run: sdkmanager "platforms;android-36" "build-tools;36.0.0" "ndk;29.0.14206865"
+      - name: Patch package, Firebase, signing, and review fixes
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import os, re
+          package = os.environ['PACKAGE_NAME']
+          root = Path('.')
+          def rw(path, fn):
+              p = root / path
+              s = p.read_text(encoding='utf-8')
+              p.write_text(fn(s), encoding='utf-8')
+          rw('android/app/build.gradle.kts', lambda s: re.sub(r'namespace = "[^"]+"', f'namespace = "{package}"', re.sub(r'applicationId = "[^"]+"', f'applicationId = "{package}"', s)))
+          rw('android/app/src/main/AndroidManifest.xml', lambda s: s.replace('android:label="Weairsim"', 'android:label="WeAirSim"').replace('android:icon="@mipmap/ic_launcher"', 'android:icon="@drawable/ic_launcher"'))
+          rw('pubspec.yaml', lambda s: re.sub(r'^version: .*', 'version: 1.0.5+6', s, flags=re.M))
+          for p in root.glob('android/app/src/main/kotlin/**/MainActivity.kt'):
+              s = p.read_text(encoding='utf-8')
+              p.write_text(re.sub(r'^package .+', f'package {package}', s, flags=re.M), encoding='utf-8')
+          rw('lib/data/repo/home/home_repo.dart', lambda s: re.sub(r'ResponseModel responseModel = await apiClient\.request\([\s\S]*?passHeader:\s*true,\s*\);', "ResponseModel responseModel = await apiClient.request(\n      url,\n      Method.getMethod,\n      null,\n      passHeader: false,\n      needAuthCheck: false,\n    );", s, count=1))
+          rw('lib/data/repo/store/store_repo.dart', lambda s: s.replace('passHeader: true)', 'passHeader: false, needAuthCheck: false)'))
+          rw('lib/data/model/dashboard/dashboard_response_model.dart', lambda s: s.replace('user: json["user"],', 'user: json["user"] == null ? null : User.fromJson(json["user"]),'))
+          rw('lib/data/services/api_service.dart', lambda s: s.replace('GeneralSettingResponseModel model = GeneralSettingResponseModel.fromJson(jsonDecode(pre));\n    return model;', "if (pre.isEmpty) { return GeneralSettingResponseModel(); }\n    try { return GeneralSettingResponseModel.fromJson(jsonDecode(pre)); } catch (_) { return GeneralSettingResponseModel(); }"))
+          icon = root / 'android/app/src/main/res/drawable/ic_launcher.xml'
+          icon.parent.mkdir(parents=True, exist_ok=True)
+          icon.write_text('<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108"><path android:fillColor="#F8FFFF" android:pathData="M0,0h108v108h-108z"/><path android:fillColor="#10BFA2" android:pathData="M24,28h60a8,8 0,0 1,8 8v36a8,8 0,0 1,-8 8h-60a8,8 0,0 1,-8 -8v-36a8,8 0,0 1,8 -8z"/><path android:fillColor="#FFFFFF" android:pathData="M31,42h12l6,22 7,-22h10l7,22 6,-22h10l-11,31h-11l-6,-19 -6,19h-11z"/></vector>\n', encoding='utf-8')
+          PY
+          cat > android/app/google-services.json <<JSON
+          {"project_info":{"project_number":"774081928535","project_id":"weairsim","storage_bucket":"weairsim.firebasestorage.app"},"client":[{"client_info":{"mobilesdk_app_id":"1:774081928535:android:0b23799f4188580f827212","android_client_info":{"package_name":"${PACKAGE_NAME}"}},"oauth_client":[],"api_key":[{"current_key":"AIzaSyCCmUbNEdkN2L7KydsDw0uEznQ_ngCms3k"}],"services":{"appinvite_service":{"other_platform_oauth_client":[]}}}],"configuration_version":"1"}
+          JSON
+          base64 --decode "$GITHUB_WORKSPACE/ci/weairsim-upload-key.b64" > android/weairsim-upload-key.jks
+          cp "$GITHUB_WORKSPACE/ci/weairsim-key.properties" android/key.properties
+          cat > android/gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx4G -XX:MaxMetaspaceSize=1G -Djava.net.preferIPv4Stack=true
+          org.gradle.daemon=false
+          org.gradle.parallel=false
+          org.gradle.workers.max=1
+          android.useAndroidX=true
+          android.enableJetifier=false
+          android.builtInKotlin=false
+          android.newDsl=false
+          EOF
+          sed -i 's/^ *//' android/gradle.properties
+      - name: Build AAB
+        working-directory: ${{ env.APP_DIR }}
+        run: |
+          flutter pub get
+          flutter build appbundle --release --no-tree-shake-icons --no-shrink --android-skip-build-dependency-validation --dart-define=DOMAIN_URL=https://www.weairsim.com
+      - uses: actions/upload-artifact@v4
+        with:
+          name: weairsim-www-release-aab
+          path: ${{ env.APP_DIR }}/build/app/outputs/bundle/release/app-release.aab
